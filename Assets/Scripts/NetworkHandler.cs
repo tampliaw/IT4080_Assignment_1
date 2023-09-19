@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Runtime.CompilerServices;
-using UnityEditor.PackageManager;
+//using UnityEditor.PackageManager;
 
 public class NetworkHandler : NetworkBehaviour
 {
