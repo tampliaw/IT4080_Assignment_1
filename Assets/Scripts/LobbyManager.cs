@@ -24,12 +24,14 @@ public class LobbyManager : NetworkBehaviour
 
     private void OnServerStarted()
     {
-        startButton.gameObject.SetActive(true);
-        statusLabel.text = "Press Start";
+        StartGame();
+        //startButton.gameObject.SetActive(true);
+        //statusLabel.text = "Press Start";
     }
 
     private void OnClientStarted()
-    { if (!IsHost)
+    {
+        if (!IsHost)
         {
             statusLabel.text = "Waiting for game to start";
         }
@@ -43,14 +45,7 @@ public class LobbyManager : NetworkBehaviour
     public void StartGame()
     {
         NetworkManager.SceneManager.LoadScene(
-            "Arena1Game",
+            "TestChat",
             UnityEngine.SceneManagement.LoadSceneMode.Single);
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
