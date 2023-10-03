@@ -7,19 +7,39 @@ public class Player : NetworkBehaviour
 {
     public float movementSpeed = 50f;
     public float rotationSpeed = 130f;
-    public NetworkVariable<Color> playerColorNetVar = new NetworkVariable<Color>(Color.red);
+    public NetworkVariable<Color> playerColor = new NetworkVariable<Color>(Color.red);
 
     private Camera playerCamera;
     private GameObject playerBody;
 
-    private void Start()
+    private void NetworkInit()
     {
+        playerBody = transform.Find("PlayerBody").gameObject;
+
         playerCamera = transform.Find("Camera").GetComponent<Camera>();
         playerCamera.enabled = IsOwner;
         playerCamera.GetComponent<AudioListener>().enabled = IsOwner;
 
-        playerBody = transform.Find("PlayerBody").gameObject;
         ApplyColor();
+        playerColor.OnValueChanged += OnPlayerColorChanged;
+
+    }
+
+    private void Awake()
+    {
+        NetworkHelper.Log(this, "Awake");
+    }
+
+    private void Start()
+    {
+        NetworkHelper.Log(this, "Start");
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        NetworkHelper.Log(this, "OnNetworkSpawn");
+        NetworkInit();
+        base.OnNetworkSpawn();
     }
 
     private void Update()
@@ -28,6 +48,11 @@ public class Player : NetworkBehaviour
         {
             OwnerHandleInput();
         }
+    }
+
+    public void OnPlayerColorChanged(Color previous, Color current)
+    {
+        ApplyColor();
     }
 
     private void OwnerHandleInput()
@@ -42,14 +67,15 @@ public class Player : NetworkBehaviour
 
     private void ApplyColor()
     {
-        playerBody.GetComponent<MeshRenderer>().material.color = playerColorNetVar.Value;
+        NetworkHelper.Log(this, $"Applying color {playerColor.Value}");
+        playerBody.GetComponent<MeshRenderer>().material.color = playerColor.Value;
     }
 
     [ServerRpc(RequireOwnership = true)]
     private void MoveServerRpc(Vector3 movement, Vector3 rotation)
     {
-        transform.Translate(CalcMovement());
-        transform.Rotate(CalcRotation());
+        transform.Translate(movement);
+        transform.Rotate(rotation);
     }
 
 

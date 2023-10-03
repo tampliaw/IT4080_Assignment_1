@@ -188,7 +188,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e109dad6627116d459081fb35c44317c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 8532651021089774166, guid: 37f85e3d9328d8d418a8e4052fbf72e0, type: 3}
+  hostPrefab: {fileID: 8532651021089774166, guid: 37f85e3d9328d8d418a8e4052fbf72e0, type: 3}
+  clientPrefab: {fileID: 8044545138475476924, guid: b838f33fe7a0cd640aeb24b06864ea5a, type: 3}
   arenaCamera: {fileID: 524388649}
 --- !u!1 &524388647
 GameObject:
@@ -460,7 +461,7 @@ Transform:
   m_GameObject: {fileID: 1902848511}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 8, y: 8, z: 8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
