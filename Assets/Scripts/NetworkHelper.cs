@@ -72,7 +72,6 @@ public class NetworkHelper : MonoBehaviour
     public static void Log(NetworkBehaviour what, string msg)
     {
         ulong ownerId = what.GetComponent<NetworkObject>().OwnerClientId;
-        Debug.Log($"[{GetNetworkMode()} {netMgr.LocalClientId}][{what.GetType()}][Owner: {ownerId}] {msg}");
-        // The full line of code above was not visible in the lecture so I had to assume this is what we are supposed to do.
+        Debug.Log($"[{GetNetworkMode()} {netMgr.LocalClientId}][{what.GetType().Name}{ownerId}]:  {msg}");
     }
 }

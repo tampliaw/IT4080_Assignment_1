@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.bitwes.multirun": {
+      "version": "https://github.com/ProfButch/MultiRun.git?path=Packages/MultiRun",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "5fba614ed81cd5e29e164b5612ee126cebea0f84"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
