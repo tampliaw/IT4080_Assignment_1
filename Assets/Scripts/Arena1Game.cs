@@ -66,13 +66,13 @@ public class Arena1Game : NetworkBehaviour
         foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
         {
             Player playerPrefabToSpawn = clientPrefab;
-            if (NetworkManager.LocalClientId == clientId)
-            {
-                playerPrefabToSpawn = hostPrefab;
-            }
+            //if (NetworkManager.LocalClientId == clientId)
+            //{
+            //    playerPrefabToSpawn = hostPrefab;
+            //}
 
                 Player playerSpawn = Instantiate(playerPrefabToSpawn, NextPosition(), Quaternion.identity);
-            playerSpawn.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+            playerSpawn.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
             playerSpawn.playerColor.Value = NextColor();
         }
     }
