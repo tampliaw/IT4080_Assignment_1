@@ -29,7 +29,6 @@ public class NetworkedPlayers : NetworkBehaviour
         if (IsServer)
         {
             ServerStart();
-            NetworkManager.OnClientConnectedCallback += ServerOnClientConnected;
             NetworkManager.OnClientDisconnectCallback += ServerOnClientDisconnected;
         }
         NetworkHelper.Log($"player count = {allNetPlayers.Count}");

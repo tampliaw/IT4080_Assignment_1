@@ -8,9 +8,10 @@ public class Player : NetworkBehaviour
     public NetworkVariable<Color> playerColor = new NetworkVariable<Color>(Color.red);
     public NetworkVariable<int> ScoreNetVar = new NetworkVariable<int>(0);
     public BulletSpawner bulletSpawner;
+    public NetworkVariable<int> playerHP = new NetworkVariable<int>();
 
-    public float movementSpeed = 50f;
-    public float rotationSpeed = 130f;
+    public float movementSpeed = 25f;
+    public float rotationSpeed = 100f;
     private Camera playerCamera;
     private GameObject playerBody;
 
@@ -57,9 +58,9 @@ public class Player : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        NetworkHelper.Log(this, "OnNetworkSpawn");
         NetworkInit();
         base.OnNetworkSpawn();
+        playerHP.Value = 100;
     }
 
     private void ClientOnScoreValueChanged(int old, int current)
@@ -78,16 +79,6 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (IsServer)
-        {
-            if(other.CompareTag("power_up"))
-            {
-                other.GetComponent<BasePowerUp>().ServerPickUp(this);
-            }
-        }
-    }
 
     private void ServerHandleCollision(Collision collision)
     {
@@ -100,7 +91,29 @@ public class Player : NetworkBehaviour
             Player other = NetworkManager.Singleton.ConnectedClients[ownerId].PlayerObject.GetComponent<Player>();
             Destroy(collision.gameObject);
             other.ScoreNetVar.Value += 1;
+            playerHP.Value -= 50;
         }
+        if (collision.gameObject.CompareTag("bullet"))
+        {
+            ulong ownerId = collision.gameObject.GetComponent<NetworkObject>().OwnerClientId;
+            NetworkHelper.Log(this,
+                $"Hit by {collision.gameObject.name} " +
+                $"owned by {ownerId}");
+            Player other = NetworkManager.Singleton.ConnectedClients[ownerId].PlayerObject.GetComponent<Player>();
+            Destroy(collision.gameObject);
+            other.ScoreNetVar.Value += 1;
+            playerHP.Value -= 25;
+
+            if (playerHP.Value <= 0)
+            {
+                Die();
+            }
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 
     public void OnPlayerColorChanged(Color previous, Color current)
@@ -130,7 +143,6 @@ public class Player : NetworkBehaviour
         transform.Translate(movement);
         transform.Rotate(rotation);
     }
-
 
     // Rotate around the y axis when shift is not pressed
     private Vector3 CalcRotation()
@@ -162,5 +174,41 @@ public class Player : NetworkBehaviour
         moveVect *= movementSpeed * Time.deltaTime;
 
         return moveVect;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        if (other.GetComponent<BulletSpawner>())
+        {
+            Debug.Log("Player damage " + other.GetComponent<NetworkObject>().OwnerClientId);
+
+            playerHP.Value -= 50;
+        }
+
+        if (IsServer)
+        {
+            if (other.GetComponent<BulletSpawner>())
+            {
+                Debug.Log("Player damage " + other.GetComponent<NetworkObject>().OwnerClientId);
+
+                playerHP.Value -= 50;
+
+                if (playerHP.Value <= 0)
+                {
+                    Die();
+                }
+            }
+
+            if (IsServer)
+            {
+                if (other.CompareTag("power_up"))
+                {
+                    other.GetComponent<BasePowerUp>().ServerPickUp(this);
+                }
+            }
+        }
     }
 }

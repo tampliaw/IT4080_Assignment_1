@@ -10,7 +10,6 @@ public class LobbyManager : NetworkBehaviour
     public Button startButton;
     public TMPro.TMP_Text statusLabel;
 
-    // Start is called before the first frame update
     void Start()
     {
         startButton.gameObject.SetActive(false);
